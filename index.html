@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Animacja i podstrony</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    nav {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      z-index: 20;
+    }
+    nav a {
+      color: cyan;
+      text-decoration: none;
+      margin: 0 20px;
+      font-size: 1.2em;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: hotpink; }
+    .page {
+      display: none;
+      text-align: center;
+      margin-top: 100px;
+      animation: fadeIn 0.7s ease;
+    }
+    .page.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      color: red;
+      font-size: 10vw;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 10;
+    }
+    h1 .heart {
+      color: hotpink;
+      margin-left: 20px;
+      display: inline-block;
+      animation: heartbeat 1s infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.3); }
+    }
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: rise 10s linear infinite;
+    }
+    @keyframes rise {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .gallery img {
+      width: 100%;
+      height: 200px;
+      border-radius: 15px;
+      transition: transform 0.3s;
+      cursor: pointer;
+      object-fit: cover;
+    }
+    .gallery img:hover { transform: scale(1.1); }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+    form input, form textarea, form button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+    form button {
+      background: cyan;
+      color: black;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    form button:hover { background: hotpink; }
+  </style>
+</head>
+<body>
+  <!-- Nawigacja -->
+  <nav>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('gallery')">Galeria</a>
+    <a href="#" onclick="showPage('contact')">Kontakt</a>
+  </nav>
+
+  <!-- Strona główna -->
+  <div id="home" class="page active">
+    <h1>
+      <a href="https://example.com" target="_blank" style="color:red; text-decoration:none;">
+        spierdalaj
+      </a>
+      <span class="heart">&lt;3</span>
+    </h1>
+  </div>
+
+  <!-- Galeria -->
+  <div id="gallery" class="page">
+    <h2>Galeria osób</h2>
+    <div class="gallery" id="personGallery"></div>
+  </div>
+
+  <!-- Kontakt -->
+  <div id="contact" class="page">
+    <h2>Kontakt</h2>
+    <form>
+      <input type="text" placeholder="Imię">
+      <input type="email" placeholder="Email">
+      <textarea placeholder="Twoja wiadomość"></textarea>
+      <button>Wyślij</button>
+    </form>
+  </div>
+
+  <!-- Muzyka w tle -->
+  <audio id="bg-music" autoplay loop>
+    <source src="1.mp3" type="audio/mpeg">
+    Twoja przeglądarka nie obsługuje odtwarzacza audio.
+  </audio>
+
+  <script>
+    // przełączanie stron
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // bąbelki w tle
+    function createBubble() {
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      const size = Math.random() * 60 + 20;
+      bubble.style.width = size + "px";
+      bubble.style.height = size + "px";
+      bubble.style.left = Math.random() * window.innerWidth + "px";
+      bubble.style.animationDuration = (Math.random() * 5 + 5) + "s";
+      document.body.appendChild(bubble);
+      setTimeout(() => bubble.remove(), 10000);
+    }
+    setInterval(createBubble, 300);
+
+    // galeria ludzi z lokalnych plików .webp
+    function loadPeople() {
+      const gallery = document.getElementById('personGallery');
+      gallery.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const img = document.createElement('img');
+        img.src = `${i}.webp`; // lokalny plik 1.webp, 2.webp, ...
+        img.alt = 'Osoba';
+        gallery.appendChild(img);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPeople);
+  </script>
+</body>
+</html>
