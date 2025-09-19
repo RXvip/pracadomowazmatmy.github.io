@@ -14,6 +14,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center; /* centruje pionowo całą stronę */
     }
     nav {
       width: 100%;
@@ -37,10 +38,15 @@
     .page {
       display: none;
       text-align: center;
-      margin-top: 100px;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      display: flex; /* centruje zawartość */
       animation: fadeIn 0.7s ease;
+      flex-direction: column;
     }
-    .page.active { display: block; }
+    .page.active { display: flex; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -110,6 +116,22 @@
       transition: background 0.3s;
     }
     form button:hover { background: hotpink; }
+
+    #startMusic {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 40px;
+      font-size: 1.2em;
+      background: cyan;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 50;
+    }
+    #startMusic:hover { background: hotpink; }
   </style>
 </head>
 <body>
@@ -147,8 +169,11 @@
     </form>
   </div>
 
+  <!-- Przyciski startowe na iOS -->
+  <button id="startMusic">Włącz muzykę</button>
+
   <!-- Muzyka w tle -->
-  <audio id="bg-music" autoplay loop>
+  <audio id="bg-music" loop>
     <source src="1.mp3" type="audio/mpeg">
     Twoja przeglądarka nie obsługuje odtwarzacza audio.
   </audio>
@@ -180,13 +205,27 @@
       gallery.innerHTML = '';
       for (let i = 1; i <= 5; i++) {
         const img = document.createElement('img');
-        img.src = `${i}.webp`; // lokalny plik 1.webp, 2.webp, ...
+        img.src = `${i}.webp`;
         img.alt = 'Osoba';
         gallery.appendChild(img);
       }
     }
-
     document.addEventListener('DOMContentLoaded', loadPeople);
+
+    // obsługa iOS / przycisku startowego
+    const audio = document.getElementById('bg-music');
+    const startBtn = document.getElementById('startMusic');
+
+    startBtn.addEventListener('click', () => {
+      audio.play();
+      startBtn.style.display = 'none';
+    });
+
+    window.addEventListener('load', () => {
+      audio.play().catch(() => {
+        startBtn.style.display = 'block';
+      });
+    });
   </script>
 </body>
 </html>
